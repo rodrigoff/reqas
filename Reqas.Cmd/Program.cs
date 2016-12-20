@@ -1,20 +1,22 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Reqas.Cmd;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 
 class Program
 {
-    private static IConfigurationRoot _configuration;
+    public static IConfigurationRoot Configuration { get; set; }
     static void Main(string[] args)
     {
         Console.OutputEncoding = Encoding.UTF8;
+
+        ConfigureServices(new ServiceCollection());
+
         BuildConfiguration();
 
-        var basePath = _configuration[Constants.BasePathKey];
+        var basePath = Configuration[Constants.BasePathKey];
 
         Console.WriteLine($"BasePath: {basePath}");
 
@@ -29,6 +31,12 @@ class Program
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile(Constants.ConfigFile);
 
-        _configuration = config.Build();
+        Configuration = config.Build();
+    }
+    private static void ConfigureServices(IServiceCollection services)
+    {
+        services.AddOptions();
+
+        services.Configure<PathOptions>(Configuration);
     }
 }
