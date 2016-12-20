@@ -12,9 +12,13 @@ class Program
     {
         Console.OutputEncoding = Encoding.UTF8;
 
-        ConfigureServices(new ServiceCollection());
-
         BuildConfiguration();
+        var serviceCollection = new ServiceCollection();
+        ConfigureServices(serviceCollection);
+        var serviceProvider = serviceCollection.BuildServiceProvider();
+
+        var fileReader = serviceProvider.GetService<FileReader>();
+
 
         var basePath = Configuration[Constants.BasePathKey];
 
@@ -22,7 +26,7 @@ class Program
 
         Console.WriteLine(string.Empty);
 
-        var dependencyDictionary = FileReader.BuildDependencyDictionary(basePath);
+        var dependencyDictionary = fileReader.BuildDependencyDictionary();
     }
 
     private static void BuildConfiguration()
@@ -38,5 +42,7 @@ class Program
         services.AddOptions();
 
         services.Configure<PathOptions>(Configuration);
+
+        services.AddScoped<FileReader>();
     }
 }
