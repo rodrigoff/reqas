@@ -3,6 +3,7 @@
     public class PathOptions
     {
         public string BasePath { get; set; }
-        public string CommonsPaths { get; set; }
+        public string CommonsPath { get; set; }
+        public string OutputhPath { get; set; }
     }
 }
