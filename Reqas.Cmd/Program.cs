@@ -44,5 +44,6 @@ class Program
         services.Configure<PathOptions>(Configuration);
 
         services.AddScoped<FileReader>();
+        services.AddScoped<FileProcessor>();
     }
 }
