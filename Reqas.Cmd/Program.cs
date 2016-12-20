@@ -19,7 +19,10 @@ class Program
         var serviceProvider = BuildServiceProvider();
 
         var fileReader = serviceProvider.GetService<FileReader>();
-        var dependencyDictionary = fileReader.BuildDependencyDictionary();
+        var dependencyGraph = fileReader.BuildDependencyGraph();
+
+        var fileProcessor = serviceProvider.GetService<OutputProcessor>();
+        
     }
 
     private static void BuildConfiguration()
@@ -45,6 +48,6 @@ class Program
         services.AddOptions();
         services.Configure<PathOptions>(Configuration);
         services.AddScoped<FileReader>();
-        services.AddScoped<FileProcessor>();
+        services.AddScoped<OutputProcessor>();
     }
 }

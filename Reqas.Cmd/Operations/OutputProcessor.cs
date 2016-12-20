@@ -3,10 +3,10 @@ using Reqas.Cmd.Options;
 
 namespace Reqas.Cmd.Operations
 {
-    public class FileProcessor
+    public class OutputProcessor
     {
         private readonly PathOptions _pathOptions;
-        public FileProcessor(IOptions<PathOptions> pathOptions)
+        public OutputProcessor(IOptions<PathOptions> pathOptions)
         {
             _pathOptions = pathOptions.Value;
         }
