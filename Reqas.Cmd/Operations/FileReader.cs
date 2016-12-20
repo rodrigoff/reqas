@@ -1,10 +1,11 @@
 ﻿using Microsoft.Extensions.Options;
+using Reqas.Cmd.Options;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Reqas.Cmd
+namespace Reqas.Cmd.Operations
 {
     public class FileReader
     {

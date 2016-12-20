@@ -1,4 +1,4 @@
-﻿namespace Reqas.Cmd
+﻿namespace Reqas.Cmd.Options
 {
     public class PathOptions
     {

@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Reqas.Cmd;
+using Reqas.Cmd.Operations;
+using Reqas.Cmd.Options;
 using System;
 using System.IO;
 using System.Text;
