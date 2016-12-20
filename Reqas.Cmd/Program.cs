@@ -18,11 +18,13 @@ class Program
         BuildConfiguration();
         var serviceProvider = BuildServiceProvider();
 
-        var fileReader = serviceProvider.GetService<FileReader>();
-        var dependencyGraph = fileReader.BuildDependencyGraph();
+        var fileLister = serviceProvider.GetService<FileLister>();
+        var fileDependencyBuilder = serviceProvider.GetService<FileDependencyBuilder>();
+        var fileDependencyValidator = serviceProvider.GetService<FileDependencyValidator>();
+        var outputProcessor = serviceProvider.GetService<OutputProcessor>();
 
-        var fileProcessor = serviceProvider.GetService<OutputProcessor>();
-        
+        var files = fileLister.Execute();
+        var dependencyGraph = fileDependencyBuilder.Execute(files);
     }
 
     private static void BuildConfiguration()
@@ -47,7 +49,10 @@ class Program
     {
         services.AddOptions();
         services.Configure<PathOptions>(Configuration);
-        services.AddScoped<FileReader>();
+
+        services.AddScoped<FileLister>();
+        services.AddScoped<FileDependencyBuilder>();
+        services.AddScoped<FileDependencyValidator>();
         services.AddScoped<OutputProcessor>();
     }
 }

@@ -5,5 +5,9 @@
         public const string ConfigFile = "config.json";
         public const string BasePathKey = "basePath";
         public const string CommonsPathKey = "commonsPath";
+
+        public const string MarkdownExtensionSearchPattern = "*.md";
+
+        public const string DependencyPrefix = "::";
     }
 }

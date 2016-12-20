@@ -7,39 +7,38 @@ using System.Linq;
 
 namespace Reqas.Cmd.Operations
 {
-    public class FileReader
+    public class FileDependencyBuilder
     {
         private readonly PathOptions _pathOptions;
-        public FileReader(IOptions<PathOptions> pathOptions)
+        public FileDependencyBuilder(IOptions<PathOptions> pathOptions)
         {
             _pathOptions = pathOptions.Value;
         }
 
-        public Dictionary<string, string[]> BuildDependencyDictionary()
+        public Dictionary<string, string[]> Execute(IEnumerable<string> files)
         {
-            var dict = new Dictionary<string, string[]>();
+            var result = new Dictionary<string, string[]>();
 
-            var markdownFiles = Directory.EnumerateFiles(_pathOptions.BasePath, "*.md", SearchOption.AllDirectories);
-            Console.WriteLine($"Markdown files: {markdownFiles.Count()}");
-
-            markdownFiles
+            files
                 .ToList()
                 .ForEach(f =>
                 {
                     var currentPath = Path.GetDirectoryName(f);
+                    Func<string, string> buildDependencyPath =
+                        x => Path.GetFullPath(Path.Combine(currentPath, x.Replace(Constants.DependencyPrefix, string.Empty)));
 
                     var dependencies = File.ReadAllLines(f)
-                        .Where(x => x.StartsWith("::"))
-                        .Select(x => Path.GetFullPath(Path.Combine(currentPath, x.Replace("::", string.Empty))))
+                        .Where(x => x.StartsWith(Constants.DependencyPrefix))
+                        .Select(buildDependencyPath)
                         .ToArray();
 
-                    dict.Add(f, dependencies);
+                    result.Add(f, dependencies);
 
                     Console.WriteLine($"F: {f}");
                     dependencies.ToList().ForEach(d => Console.WriteLine($" D: {d}"));
                 });
 
-            return dict;
+            return result;
         }
     }
 }
