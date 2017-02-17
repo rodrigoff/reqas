@@ -2,6 +2,7 @@
 using Reqas.Cmd.Options;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Reqas.Cmd.Operations
 {
@@ -14,8 +15,6 @@ namespace Reqas.Cmd.Operations
         }
 
         public IEnumerable<string> Execute()
-        {
-            return Directory.EnumerateFiles(_pathOptions.BasePath, Constants.MarkdownExtensionSearchPattern, SearchOption.AllDirectories);
-        }
+            => Directory.GetFiles(_pathOptions.BasePath, Constants.MarkdownExtensionSearchPattern, SearchOption.AllDirectories).Where(f => !Path.GetFileName(f).StartsWith(Constants.PartialFilePrefix));
     }
 }

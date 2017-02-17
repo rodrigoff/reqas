@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using Reqas.Cmd.Domain;
 using Reqas.Cmd.Options;
 using System;
 using System.Collections.Generic;
@@ -9,36 +10,39 @@ namespace Reqas.Cmd.Operations
 {
     public class FileDependencyBuilder
     {
+        private readonly Func<string, string, string> _buildDependencyPath =
+            (path, line) => Path.GetFullPath(Path.Combine(path, line.Replace(Constants.DependencyPrefix, string.Empty).Trim()));
+
         private readonly PathOptions _pathOptions;
         public FileDependencyBuilder(IOptions<PathOptions> pathOptions)
         {
             _pathOptions = pathOptions.Value;
         }
 
-        public Dictionary<string, string[]> Execute(IEnumerable<string> files)
+        public List<IncludedFile> Execute(IEnumerable<string> files)
         {
-            var result = new Dictionary<string, string[]>();
+            return files.ToList().Select(x => BuildIncludedFile(string.Empty, x)).ToList();
+        }
 
-            files
-                .ToList()
-                .ForEach(f =>
+        public IncludedFile BuildIncludedFile(string includeName, string filePath)
+        {
+            var currentPath = Path.GetDirectoryName(filePath);
+            var dependencyPaths = File.ReadAllLines(filePath)
+                .Where(line => line.StartsWith(Constants.DependencyPrefix))
+                .Select(line => new
                 {
-                    var currentPath = Path.GetDirectoryName(f);
-                    Func<string, string> buildDependencyPath =
-                        x => Path.GetFullPath(Path.Combine(currentPath, x.Replace(Constants.DependencyPrefix, string.Empty)));
+                    IncludeName = line,
+                    DependencyPath = _buildDependencyPath(currentPath, line)
+                })
+                .ToArray();
 
-                    var dependencies = File.ReadAllLines(f)
-                        .Where(x => x.StartsWith(Constants.DependencyPrefix))
-                        .Select(buildDependencyPath)
-                        .ToArray();
+            var dependencies = new List<IncludedFile>();
+            foreach (var d in dependencyPaths)
+            {
+                dependencies.Add(BuildIncludedFile(d.IncludeName, d.DependencyPath));
+            }
 
-                    result.Add(f, dependencies);
-
-                    Console.WriteLine($"F: {f}");
-                    dependencies.ToList().ForEach(d => Console.WriteLine($" D: {d}"));
-                });
-
-            return result;
+            return new IncludedFile(filePath, includeName, dependencies.ToArray());
         }
     }
 }

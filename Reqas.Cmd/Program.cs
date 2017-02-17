@@ -25,6 +25,7 @@ class Program
 
         var files = fileLister.Execute();
         var dependencyGraph = fileDependencyBuilder.Execute(files);
+        outputProcessor.Execute(dependencyGraph);
     }
 
     private static void BuildConfiguration()
