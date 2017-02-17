@@ -1,0 +1,5 @@
+{
+  "basePath": "wwwroot",
+  "commonsPath": "bin\\_commons",
+  "output":  "bin\\_output"
+}
