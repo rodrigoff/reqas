@@ -8,6 +8,7 @@
         public const string OutputKey = "output";
 
         public const string MarkdownExtensionSearchPattern = "*.md";
+        public const string PartialFilePrefix = "_";
 
         public const string DependencyPrefix = "#include";
     }

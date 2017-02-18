@@ -20,12 +20,12 @@ class Program
 
         var fileLister = serviceProvider.GetService<FileLister>();
         var fileDependencyBuilder = serviceProvider.GetService<FileDependencyBuilder>();
-        var fileDependencyValidator = serviceProvider.GetService<FileDependencyValidator>();
-        var outputProcessor = serviceProvider.GetService<OutputProcessor>();
+        var dependencyProcessor = serviceProvider.GetService<DependencyProcessor>();
+        var assetsProcessor = serviceProvider.GetService<AssetsProcessor>();
 
         var files = fileLister.Execute();
         var dependencyGraph = fileDependencyBuilder.Execute(files);
-        outputProcessor.Execute(dependencyGraph);
+        var convertedFiles = dependencyProcessor.Execute(dependencyGraph);
     }
 
     private static void BuildConfiguration()
@@ -53,7 +53,7 @@ class Program
 
         services.AddScoped<FileLister>();
         services.AddScoped<FileDependencyBuilder>();
-        services.AddScoped<FileDependencyValidator>();
-        services.AddScoped<OutputProcessor>();
+        services.AddScoped<DependencyProcessor>();
+        services.AddScoped<AssetsProcessor>();
     }
 }
